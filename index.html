@@ -7,8 +7,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #121212; /* Fundo escuro */
-            color: #FFFFFF; /* Texto branco */
+            background-color: #121212;
+            color: #FFFFFF;
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,7 +18,7 @@
             height: 100vh;
         }
         .container {
-            background-color: #1e1e1e; /* Cinza escuro */
+            background-color: #1e1e1e;
             border-radius: 10px;
             padding: 20px;
             width: 80%;
@@ -28,15 +28,15 @@
             text-align: center;
         }
         .quote-box {
-            border: 2px solid #FFFFFF; /* Borda branca */
+            border: 2px solid #FFFFFF;
             padding: 20px;
             margin-bottom: 20px;
             text-align: center;
-            background-color: #333333; /* Fundo da citação */
+            background-color: #333333;
             border-radius: 10px;
         }
         button {
-            background-color: #555555; /* Cinza */
+            background-color: #555555;
             color: #FFFFFF;
             padding: 10px 20px;
             border: none;
@@ -58,17 +58,25 @@
             width: 20px;
             height: 20px;
         }
-        select {
-            padding: 10px;
-            background-color: #555555;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-        #notificationBtn, #disableNotificationBtn {
+        #favoritesList {
+            background-color: #333333;
+            border: 2px solid #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
             display: none;
+        }
+        #favoritesTitle {
+            text-align: center;
+        }
+        #favorites {
+            list-style-type: none;
+            padding: 0;
+        }
+        #favorites li {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #FFFFFF;
+            padding-bottom: 5px;
         }
     </style>
 </head>
@@ -83,28 +91,16 @@
 
         <div class="quote-box" id="quote-box">
             <p id="quote-text">"A vida é uma série de mudanças naturais e espontâneas. Não resista a elas."</p>
-            <button id="favBtn" onclick="toggleFavorite()">Adicionar aos Favoritos</button>
         </div>
 
         <button onclick="nextQuote()">Citação Seguinte</button>
+        <button id="addFavBtn" onclick="addToFavorites()">Adicionar aos Favoritos</button>
+        <button id="showFavBtn" onclick="showFavorites()">Ver Favoritos</button>
 
-        <!-- Seletor de tempo para notificações -->
-        <div>
-            <label for="notificationTime" id="notificationLabel">Defina o intervalo de notificações:</label>
-            <select id="notificationTime" onchange="scheduleNotification()">
-                <option value="30">30 minutos</option>
-                <option value="60">1 hora</option>
-                <option value="120">2 horas</option>
-                <option value="180">3 horas</option>
-                <option value="360">6 horas</option>
-                <option value="720">12 horas</option>
-                <option value="1440">24 horas</option>
-            </select>
-            <p id="notificationMessage"></p>
+        <div id="favoritesList">
+            <h2 id="favoritesTitle">Citações Favoritas</h2>
+            <ul id="favorites"></ul>
         </div>
-
-        <!-- Botões para controlar as notificações -->
-        <button id="disableNotificationBtn" onclick="disableNotifications()">Desativar Notificações</button>
     </div>
 
     <script>
@@ -223,32 +219,57 @@
         ];
 
         let currentLanguage = 'pt'; // Linguagem padrão
+        let currentQuote = ''; // Citação atual
         let favoriteQuotes = []; // Lista de citações favoritas
-        let currentQuote = quotesPT[0]; // Citação atual
 
         function nextQuote() {
             const randomIndex = Math.floor(Math.random() * quotesPT.length);
             currentQuote = currentLanguage === 'pt' ? quotesPT[randomIndex] : quotesEN[randomIndex];
             document.getElementById('quote-text').innerText = currentQuote;
-            updateFavoriteButton(); // Atualiza o botão de favoritos
+        }
+
+        function addToFavorites() {
+            if (!favoriteQuotes.includes(currentQuote)) {
+                favoriteQuotes.push(currentQuote);
+                const successMsg = currentLanguage === 'pt' ? 'Adicionado aos favoritos!' : 'Added to favorites!';
+                alert(successMsg);
+            } else {
+                const alreadyFavMsg = currentLanguage === 'pt' ? 'Esta citação já está nos favoritos!' : 'This quote is already in favorites!';
+                alert(alreadyFavMsg);
+            }
+        }
+
+        function showFavorites() {
+            const favoritesList = document.getElementById('favoritesList');
+            const favoritesUl = document.getElementById('favorites');
+            favoritesUl.innerHTML = ''; // Limpa a lista antes de adicionar os itens
+
+            if (favoriteQuotes.length === 0) {
+                const noFavoritesText = currentLanguage === 'pt' ? 'Nenhuma citação nos favoritos.' : 'No quotes in favorites.';
+                favoritesUl.innerHTML = `<li>${noFavoritesText}</li>`;
+            } else {
+                favoriteQuotes.forEach(quote => {
+                    const li = document.createElement('li');
+                    li.innerText = quote;
+                    favoritesUl.appendChild(li);
+                });
+            }
+
+            // Alterna a exibição da lista de favoritos
+            favoritesList.style.display = favoritesList.style.display === 'none' ? 'block' : 'none';
+
+            // Atualiza o texto do botão
+            document.getElementById('showFavBtn').innerText = favoritesList.style.display === 'none'
+                ? (currentLanguage === 'pt' ? 'Ver Favoritos' : 'View Favorites')
+                : (currentLanguage === 'pt' ? 'Ocultar Favoritos' : 'Hide Favorites');
         }
 
         function translateToPortuguese() {
             document.getElementById('title').innerText = "Citações Diárias - Motivationz";
             document.querySelector('button[onclick="nextQuote()"]').innerText = "Citação Seguinte";
-            document.getElementById('notificationLabel').innerText = "Defina o intervalo de notificações:";
-            document.getElementById('disableNotificationBtn').innerText = "Desativar Notificações";
-            
-            // Atualiza os tempos no seletor de notificações
-            const notificationTimes = document.getElementById('notificationTime').options;
-            notificationTimes[0].text = "30 minutos";
-            notificationTimes[1].text = "1 hora";
-            notificationTimes[2].text = "2 horas";
-            notificationTimes[3].text = "3 horas";
-            notificationTimes[4].text = "6 horas";
-            notificationTimes[5].text = "12 horas";
-            notificationTimes[6].text = "24 horas";
-
+            document.getElementById('addFavBtn').innerText = "Adicionar aos Favoritos";
+            document.getElementById('showFavBtn').innerText = "Ver Favoritos";
+            document.getElementById('favoritesTitle').innerText = "Citações Favoritas";
             currentLanguage = 'pt'; // Atualiza para o idioma português
             nextQuote(); // Atualiza a citação para o idioma selecionado
         }
@@ -256,114 +277,13 @@
         function translateToEnglish() {
             document.getElementById('title').innerText = "Daily Quotes - Motivationz";
             document.querySelector('button[onclick="nextQuote()"]').innerText = "Next Quote";
-            document.getElementById('notificationLabel').innerText = "Set the notification interval:";
-            document.getElementById('disableNotificationBtn').innerText = "Disable Notifications";
-            
-            // Atualiza os tempos no seletor de notificações
-            const notificationTimes = document.getElementById('notificationTime').options;
-            notificationTimes[0].text = "30 minutes";
-            notificationTimes[1].text = "1 hour";
-            notificationTimes[2].text = "2 hours";
-            notificationTimes[3].text = "3 hours";
-            notificationTimes[4].text = "6 hours";
-            notificationTimes[5].text = "12 hours";
-            notificationTimes[6].text = "24 hours";
-
+            document.getElementById('addFavBtn').innerText = "Add to Favorites";
+            document.getElementById('showFavBtn').innerText = "View Favorites";
+            document.getElementById('favoritesTitle').innerText = "Favorite Quotes";
             currentLanguage = 'en'; // Atualiza para o idioma inglês
             nextQuote(); // Atualiza a citação para o idioma selecionado
-        }
-
-        // Sistema de Notificações
-        let notificationInterval; // Armazena o intervalo para as notificações
-
-        // Verificar se o navegador suporta notificações
-        if ('Notification' in window) {
-            // Pedir permissão para enviar notificações
-            Notification.requestPermission().then(permission => {
-                if (permission !== 'granted') {
-                    alert('Por favor, habilite as notificações para utilizar esse recurso.');
-                }
-            });
-        }
-
-        function scheduleNotification() {
-            // Limpar qualquer intervalo anterior
-            if (notificationInterval) {
-                clearInterval(notificationInterval);
-            }
-
-            // Obter o tempo selecionado
-            const notificationTime = document.getElementById('notificationTime').value;
-            const intervalTime = notificationTime * 60000; // Converter minutos para milissegundos
-
-            // Iniciar um novo intervalo para enviar notificações
-            notificationInterval = setInterval(() => {
-                const randomIndex = Math.floor(Math.random() * quotesPT.length);
-                const quoteText = currentLanguage === 'pt' ? quotesPT[randomIndex] : quotesEN[randomIndex];
-
-                // Enviar notificação
-                new Notification("Motivationz - Citação do Dia", {
-                    body: quoteText,
-                    icon: "https://cdn-icons-png.flaticon.com/512/3201/3201510.png"
-                });
-            }, intervalTime); // Configurar intervalo com base no tempo selecionado
-
-            // Mostrar a mensagem de sucesso de ativação de notificações
-            document.getElementById('notificationMessage').innerText = currentLanguage === 'pt' 
-                ? "Notificações ativadas com sucesso!" 
-                : "Notifications successfully activated!";
-            
-            // Exibir o botão para desativar notificações
-            document.getElementById('disableNotificationBtn').style.display = "block";
-        }
-
-        function disableNotifications() {
-            // Limpar o intervalo de notificações
-            if (notificationInterval) {
-                clearInterval(notificationInterval);
-            }
-
-            // Mostrar a mensagem de sucesso de desativação de notificações
-            document.getElementById('notificationMessage').innerText = currentLanguage === 'pt' 
-                ? "Notificações desativadas com sucesso!" 
-                : "Notifications successfully deactivated!";
-            
-            // Esconder o botão de desativar notificações
-            document.getElementById('disableNotificationBtn').style.display = "none";
-        }
-
-        // Gerenciar Favoritos
-        function toggleFavorite() {
-            const quote = document.getElementById('quote-text').innerText;
-
-            if (favoriteQuotes.includes(quote)) {
-                // Remover dos favoritos
-                favoriteQuotes = favoriteQuotes.filter(fav => fav !== quote);
-                document.getElementById('favBtn').innerText = currentLanguage === 'pt' 
-                    ? "Adicionar aos Favoritos" 
-                    : "Add to Favorites";
-            } else {
-                // Adicionar aos favoritos
-                favoriteQuotes.push(quote);
-                document.getElementById('favBtn').innerText = currentLanguage === 'pt' 
-                    ? "Remover dos Favoritos" 
-                    : "Remove from Favorites";
-            }
-        }
-
-        function updateFavoriteButton() {
-            const quote = document.getElementById('quote-text').innerText;
-
-            if (favoriteQuotes.includes(quote)) {
-                document.getElementById('favBtn').innerText = currentLanguage === 'pt' 
-                    ? "Remover dos Favoritos" 
-                    : "Remove from Favorites";
-            } else {
-                document.getElementById('favBtn').innerText = currentLanguage === 'pt' 
-                    ? "Adicionar aos Favoritos" 
-                    : "Add to Favorites";
-            }
         }
     </script>
 </body>
 </html>
+
