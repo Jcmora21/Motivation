@@ -58,6 +58,10 @@
             width: 20px;
             height: 20px;
         }
+        #favorite-btn, #remove-favorite-btn {
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -73,13 +77,17 @@
             <p id="quote-text">"A vida é uma série de mudanças naturais e espontâneas. Não resista a elas."</p>
         </div>
 
-        <button onclick="nextQuote()">Citação Seguinte</button>
+        <button id="next-quote-btn" onclick="nextQuote()">Citação Seguinte</button>
+
+        <!-- Botão para adicionar e remover favoritos -->
+        <button id="favorite-btn" onclick="addFavorite()">Adicionar aos Favoritos</button>
+        <button id="remove-favorite-btn" onclick="removeFavorite()">Remover dos Favoritos</button>
     </div>
 
     <script>
         // Lista de citações em português
         const quotesPT = [
-            "A vida é uma oportunidade, aproveite-a.",
+        "A vida é uma oportunidade, aproveite-a.",
             "O amor é a força mais poderosa do universo.",
             "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
             "Se você pode sonhar, você pode realizar.",
@@ -132,7 +140,6 @@
             "A verdadeira felicidade é estar satisfeito com quem você é.",
             "A vida é um reflexo do que você acredita.",
             "Você não pode mudar o passado, mas pode moldar seu futuro.",
-
         ];
 
         // Lista de citações em inglês
@@ -193,26 +200,52 @@
         ];
 
         let currentLanguage = 'pt'; // Linguagem padrão
+        let currentQuote = ''; // Citação atual
+        let favorites = []; // Array para guardar as citações favoritas
 
         function nextQuote() {
             const randomIndex = Math.floor(Math.random() * quotesPT.length);
-            const quoteText = currentLanguage === 'pt' ? quotesPT[randomIndex] : quotesEN[randomIndex];
-            document.getElementById('quote-text').innerText = quoteText;
+            currentQuote = currentLanguage === 'pt' ? quotesPT[randomIndex] : quotesEN[randomIndex];
+            document.getElementById('quote-text').innerText = currentQuote;
+            checkFavoriteStatus(); // Atualiza o status de favorito
         }
 
         function translateToPortuguese() {
             document.getElementById('title').innerText = "Citações Diárias - Motivationz";
-            document.querySelector('button[onclick="nextQuote()"]').innerText = "Citação Seguinte";
+            document.getElementById('next-quote-btn').innerText = "Citação Seguinte";
             currentLanguage = 'pt'; // Atualiza para o idioma português
             nextQuote(); // Atualiza a citação para o idioma selecionado
         }
 
         function translateToEnglish() {
             document.getElementById('title').innerText = "Daily Quotes - Motivationz";
-            document.querySelector('button[onclick="nextQuote()"]').innerText = "Next Quote";
+            document.getElementById('next-quote-btn').innerText = "Next Quote";
             currentLanguage = 'en'; // Atualiza para o idioma inglês
             nextQuote(); // Atualiza a citação para o idioma selecionado
         }
+
+        function addFavorite() {
+            if (!favorites.includes(currentQuote)) {
+                favorites.push(currentQuote);
+                alert("Citação adicionada aos favoritos!");
+                checkFavoriteStatus(); // Atualiza o botão de favoritos
+            }
+        }
+
+        function removeFavorite() {
+            favorites = favorites.filter(quote => quote !== currentQuote);
+            alert("Citação removida dos favoritos!");
+            checkFavoriteStatus(); // Atualiza o botão de favoritos
+        }
+
+        function checkFavoriteStatus() {
+            const isFavorite = favorites.includes(currentQuote);
+            document.getElementById('favorite-btn').style.display = isFavorite ? 'none' : 'block';
+            document.getElementById('remove-favorite-btn').style.display = isFavorite ? 'block' : 'none';
+        }
+
+        // Inicializa com uma citação aleatória
+        nextQuote();
     </script>
 </body>
 </html>
