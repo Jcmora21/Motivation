@@ -83,6 +83,7 @@
 
         <div class="quote-box" id="quote-box">
             <p id="quote-text">"A vida é uma série de mudanças naturais e espontâneas. Não resista a elas."</p>
+            <button id="favBtn" onclick="toggleFavorite()">Adicionar aos Favoritos</button>
         </div>
 
         <button onclick="nextQuote()">Citação Seguinte</button>
@@ -109,7 +110,7 @@
     <script>
         // Lista de citações em português
         const quotesPT = [
-        "A vida é uma oportunidade, aproveite-a.",
+"A vida é uma oportunidade, aproveite-a.",
             "O amor é a força mais poderosa do universo.",
             "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
             "Se você pode sonhar, você pode realizar.",
@@ -222,11 +223,14 @@
         ];
 
         let currentLanguage = 'pt'; // Linguagem padrão
+        let favoriteQuotes = []; // Lista de citações favoritas
+        let currentQuote = quotesPT[0]; // Citação atual
 
         function nextQuote() {
             const randomIndex = Math.floor(Math.random() * quotesPT.length);
-            const quoteText = currentLanguage === 'pt' ? quotesPT[randomIndex] : quotesEN[randomIndex];
-            document.getElementById('quote-text').innerText = quoteText;
+            currentQuote = currentLanguage === 'pt' ? quotesPT[randomIndex] : quotesEN[randomIndex];
+            document.getElementById('quote-text').innerText = currentQuote;
+            updateFavoriteButton(); // Atualiza o botão de favoritos
         }
 
         function translateToPortuguese() {
@@ -234,6 +238,17 @@
             document.querySelector('button[onclick="nextQuote()"]').innerText = "Citação Seguinte";
             document.getElementById('notificationLabel').innerText = "Defina o intervalo de notificações:";
             document.getElementById('disableNotificationBtn').innerText = "Desativar Notificações";
+            
+            // Atualiza os tempos no seletor de notificações
+            const notificationTimes = document.getElementById('notificationTime').options;
+            notificationTimes[0].text = "30 minutos";
+            notificationTimes[1].text = "1 hora";
+            notificationTimes[2].text = "2 horas";
+            notificationTimes[3].text = "3 horas";
+            notificationTimes[4].text = "6 horas";
+            notificationTimes[5].text = "12 horas";
+            notificationTimes[6].text = "24 horas";
+
             currentLanguage = 'pt'; // Atualiza para o idioma português
             nextQuote(); // Atualiza a citação para o idioma selecionado
         }
@@ -243,6 +258,17 @@
             document.querySelector('button[onclick="nextQuote()"]').innerText = "Next Quote";
             document.getElementById('notificationLabel').innerText = "Set the notification interval:";
             document.getElementById('disableNotificationBtn').innerText = "Disable Notifications";
+            
+            // Atualiza os tempos no seletor de notificações
+            const notificationTimes = document.getElementById('notificationTime').options;
+            notificationTimes[0].text = "30 minutes";
+            notificationTimes[1].text = "1 hour";
+            notificationTimes[2].text = "2 hours";
+            notificationTimes[3].text = "3 hours";
+            notificationTimes[4].text = "6 hours";
+            notificationTimes[5].text = "12 hours";
+            notificationTimes[6].text = "24 hours";
+
             currentLanguage = 'en'; // Atualiza para o idioma inglês
             nextQuote(); // Atualiza a citação para o idioma selecionado
         }
@@ -300,10 +326,43 @@
             // Mostrar a mensagem de sucesso de desativação de notificações
             document.getElementById('notificationMessage').innerText = currentLanguage === 'pt' 
                 ? "Notificações desativadas com sucesso!" 
-                : "Notifications successfully disabled!";
+                : "Notifications successfully deactivated!";
             
-            // Ocultar o botão de desativar notificações
+            // Esconder o botão de desativar notificações
             document.getElementById('disableNotificationBtn').style.display = "none";
+        }
+
+        // Gerenciar Favoritos
+        function toggleFavorite() {
+            const quote = document.getElementById('quote-text').innerText;
+
+            if (favoriteQuotes.includes(quote)) {
+                // Remover dos favoritos
+                favoriteQuotes = favoriteQuotes.filter(fav => fav !== quote);
+                document.getElementById('favBtn').innerText = currentLanguage === 'pt' 
+                    ? "Adicionar aos Favoritos" 
+                    : "Add to Favorites";
+            } else {
+                // Adicionar aos favoritos
+                favoriteQuotes.push(quote);
+                document.getElementById('favBtn').innerText = currentLanguage === 'pt' 
+                    ? "Remover dos Favoritos" 
+                    : "Remove from Favorites";
+            }
+        }
+
+        function updateFavoriteButton() {
+            const quote = document.getElementById('quote-text').innerText;
+
+            if (favoriteQuotes.includes(quote)) {
+                document.getElementById('favBtn').innerText = currentLanguage === 'pt' 
+                    ? "Remover dos Favoritos" 
+                    : "Remove from Favorites";
+            } else {
+                document.getElementById('favBtn').innerText = currentLanguage === 'pt' 
+                    ? "Adicionar aos Favoritos" 
+                    : "Add to Favorites";
+            }
         }
     </script>
 </body>
