@@ -1,100 +1,85 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motivationz - Citações Diárias</title>
+    <title>Citações Diárias - Motivationz</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+            background-color: #121212; /* Fundo escuro */
+            color: #FFFFFF; /* Texto branco */
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
-
         .container {
-            max-width: 600px;
-            margin: auto;
-            background-color: #1e1e1e;
+            background-color: #1e1e1e; /* Cinza escuro */
+            border-radius: 10px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 80%;
+            max-width: 500px;
         }
-
-        h1, h2 {
-            color: #ffffff;
+        h1 {
+            text-align: center;
         }
-
-        textarea {
-            width: calc(100% - 20px);
-            background-color: #2a2a2a;
-            color: #ffffff;
-            border: 1px solid #444;
-            border-radius: 5px;
-            padding: 10px;
-            resize: none;
-            margin: 10px 0;
+        .quote-box {
+            border: 2px solid #FFFFFF; /* Borda branca */
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            background-color: #333333; /* Fundo da citação */
+            border-radius: 10px;
         }
-
         button {
-            background-color: #444;
-            color: white;
+            background-color: #555555; /* Cinza */
+            color: #FFFFFF;
+            padding: 10px 20px;
             border: none;
-            padding: 10px;
             border-radius: 5px;
             cursor: pointer;
-            margin: 5px 0;
+            margin-right: 10px;
         }
-
-        button:hover {
-            background-color: #666;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            margin: 10px 0;
+        .translate-buttons {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            margin-bottom: 20px;
         }
-
-        button.remove {
-            background-color: #4CAF50;
-            color: #ffffff;
+        .translate-buttons button {
+            display: flex;
+            align-items: center;
         }
-
-        button.remove:hover {
-            background-color: #388E3C;
+        .translate-buttons img {
+            margin-left: 8px;
+            width: 20px;
+            height: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Citações Diárias - Motivationz</h1>
-        <textarea id="quote" readonly></textarea>
-        <button id="generateQuote">Citação Seguinte</button>
-        <button id="saveFavorite" style="display:none;">Salvar Favorito</button>
-        <h2>Favoritos</h2>
-        <ul id="favoriteQuotes"></ul>
-        <label for="notificationFrequency">Frequência de Notificação:</label>
-        <select id="notificationFrequency">
-            <option value="86400000">24 horas</option>
-            <option value="7200000">2 horas</option>
-            <option value="10800000">3 horas</option>
-            <option value="21600000">6 horas</option>
-            <option value="43200000">12 horas</option>
-            <option value="1440000">30 minutos</option>
-        </select>
-        <button id="setNotification">Definir Notificação</button>
+        <h1 id="title">Citações Diárias - Motivationz</h1>
+
+        <div class="translate-buttons">
+            <button onclick="translateToPortuguese()">Português <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" alt="Bandeira de Portugal"></button>
+            <button onclick="translateToEnglish()">English <img src="https://cdn-icons-png.flaticon.com/512/206/206592.png" alt="Bandeira dos EUA"></button>
+        </div>
+
+        <div class="quote-box" id="quote-box">
+            <p id="quote-text">"A vida é uma série de mudanças naturais e espontâneas. Não resista a elas."</p>
+        </div>
+
+        <button onclick="nextQuote()">Citação Seguinte</button>
     </div>
 
     <script>
-        const quotes = [
-        "A vida é uma oportunidade, aproveite-a.",
+        // Lista de citações em português
+        const quotesPT = [
+            "A vida é uma oportunidade, aproveite-a.",
             "O amor é a força mais poderosa do universo.",
             "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
             "Se você pode sonhar, você pode realizar.",
@@ -147,833 +132,86 @@
             "A verdadeira felicidade é estar satisfeito com quem você é.",
             "A vida é um reflexo do que você acredita.",
             "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é.",
-            "A vida é um reflexo do que você acredita.",
-            "Você não pode mudar o passado, mas pode moldar seu futuro.",
-            "A vida é uma oportunidade, aproveite-a.",
-            "O amor é a força mais poderosa do universo.",
-            "Mantenha seus sonhos vivos. Entenda que para alcançá-los, você precisa de fé e confiança.",
-            "Se você pode sonhar, você pode realizar.",
-            "A vida é uma aventura ousada ou não é nada.",
-            "O sucesso não é o resultado de uma combustão espontânea. Você deve se colocar em chamas.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-            "Não importa o quão devagar você vá, contanto que não pare.",
-            "Você não pode mudar o passado, mas pode moldar o seu futuro.",
-            "O que você faz faz a diferença, e você tem que decidir que tipo de diferença você quer fazer.",
-            "A vida é feita de escolhas. Você deve escolher sabiamente.",
-            "A felicidade não é algo pronto. Ela vem de suas próprias ações.",
-            "O verdadeiro sinal de inteligência não é o conhecimento, mas a imaginação.",
-            "Não desista. Geralmente é a última chave que abre a fechadura.",
-            "Você nunca sabe a força que tem até que a sua única alternativa é ser forte.",
-            "A vida é uma coleção de experiências. Aproveite cada uma delas.",
-            "A única limitação que você tem é aquela que você se impõe.",
-            "O que não te mata, te fortalece.",
-            "Aprenda a dançar na chuva, em vez de esperar a tempestade passar.",
-            "Acredite que você pode e você já está no meio do caminho.",
-            "Cada nova manhã traz novas oportunidades.",
-            "O que você faz hoje pode melhorar todos os seus amanhãs.",
-            "O sucesso não é a chave para a felicidade. A felicidade é a chave para o sucesso.",
-            "Não tenha medo de falhar. Tenha medo de não tentar.",
-            "A vida é feita de escolhas; escolha sabiamente.",
-            "O caminho para o sucesso é sempre em construção.",
-            "O amanhã pertence àqueles que se preparam para ele hoje.",
-            "Sua vida é uma história, escreva-a com sabedoria.",
-            "Cada dia é uma nova chance para recomeçar.",
-            "A vida é um presente. Aproveite cada momento.",
-            "A gratidão é a memória do coração.",
-            "Você não pode ter uma nova experiência se não estiver disposto a sair da sua zona de conforto.",
-            "A felicidade é um estado de espírito.",
-            "A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar em movimento.",
-            "Você é mais forte do que imagina.",
-            "A vida é uma jornada, não um destino.",
-            "Não importa quão devagar você vá, desde que você não pare.",
-            "O único lugar onde o sucesso vem antes do trabalho é no dicionário.",
-            "A única maneira de fazer um ótimo trabalho é amar o que você faz.",
-            "O sucesso é uma jornada, não um destino.",
-            "A única limitação que você tem é a sua mente.",
-            "Você não precisa ser grande para começar, mas precisa começar para ser grande.",
-            "O que você faz faz a diferença. Faça a diferença.",
-            "Você não pode controlar o que acontece, mas pode controlar como reage a isso.",
-            "O futuro pertence àqueles que acreditam em seus sonhos.",
-            "O caminho para o sucesso é sempre em construção.",
-            "A verdadeira felicidade é estar satisfeito com quem você é."
+
         ];
 
-        let currentQuote = "";
+        // Lista de citações em inglês
+        const quotesEN = [
+"Life is an opportunity, take it.",
+"Love is the most powerful force in the universe.",
+"Keep your dreams alive. Understand that to achieve them, you need faith and confidence.",
+"If you can dream it, you can achieve it.",
+"The future belongs to those who believe in the beauty of their dreams.",
+"Failure is simply the opportunity to begin again, this time more intelligently.",
+"The only way to do great work is to love what you do.",
+"Success is the sum of small efforts repeated day in and day out.",
+"It doesn't matter how slowly you go, as long as you don't stop.",
+"You cannot change the past, but you can shape your future.",
+"What you do makes a difference, and you have to decide what kind of difference you want to make.",
+"Life is either a daring adventure or nothing at all.",
+"Success is not the result of spontaneous combustion. You must set yourself on fire.",
+"What you think, you become.",
+"Life is made of choices. You must choose wisely.",
+"Happiness is not something ready-made. It comes from your own actions.",
+"The true sign of intelligence is not knowledge but imagination.",
+"Don't give up. Usually, it is the last key that opens the lock.",
+"You never know how strong you are until your only alternative is to be strong.",
+"Life is a collection of experiences. Enjoy each one.",
+"The only limitation you have is the one you impose on yourself.",
+"What doesn't kill you makes you stronger.",
+"Learn to dance in the rain, rather than waiting for the storm to pass.",
+"Believe you can and you're halfway there.",
+"Each new morning brings new opportunities.",
+"What you do today can improve all your tomorrows.",
+"Success is not the key to happiness. Happiness is the key to success.",
+"Don't be afraid to fail. Be afraid not to try.",
+"Life is made of choices; choose wisely.",
+"The road to success is always under construction.",
+"Tomorrow belongs to those who prepare for it today.",
+"Your life is a story, write it wisely.",
+"Each day is a new chance to start again.",
+"Life is a gift. Enjoy every moment.",
+"Gratitude is the memory of the heart.",
+"You cannot have a new experience if you're not willing to step outside your comfort zone.",
+"Happiness is a state of mind.",
+"Life is like riding a bicycle. To keep your balance, you must keep moving.",
+"You are stronger than you think.",
+"Life is a journey, not a destination.",
+"It doesn't matter how slowly you go, as long as you don't stop.",
+"The only place where success comes before work is in the dictionary.",
+"The only way to do great work is to love what you do.",
+"Success is a journey, not a destination.",
+"The only limitation you have is your mind.",
+"You don't have to be great to start, but you have to start to be great.",
+"What you do makes a difference. Make a difference.",
+"You cannot control what happens, but you can control how you react to it.",
+"The future belongs to those who believe in their dreams.",
+"The road to success is always under construction.",
+"True happiness is being satisfied with who you are.",
+"Life is a reflection of what you believe.",
+"You cannot change the past, but you can shape your future.",
+        ];
 
-        function generateQuote() {
-            const randomIndex = Math.floor(Math.random() * quotes.length);
-            currentQuote = quotes[randomIndex];
-            document.getElementById("quote").value = currentQuote;
-            document.getElementById("saveFavorite").style.display = "inline-block";
+        let currentLanguage = 'pt'; // Linguagem padrão
+
+        function nextQuote() {
+            const randomIndex = Math.floor(Math.random() * quotesPT.length);
+            const quoteText = currentLanguage === 'pt' ? quotesPT[randomIndex] : quotesEN[randomIndex];
+            document.getElementById('quote-text').innerText = quoteText;
         }
 
-        function saveFavorite() {
-            if (!currentQuote) {
-                alert("Por favor, gere uma citação primeiro!");
-                return;
-            }
-
-            const favoritesList = JSON.parse(localStorage.getItem("favorites")) || [];
-            if (!favoritesList.includes(currentQuote)) {
-                favoritesList.push(currentQuote);
-                localStorage.setItem("favorites", JSON.stringify(favoritesList));
-                displayFavorites();
-            } else {
-                alert("Esta citação já está nos favoritos!");
-            }
+        function translateToPortuguese() {
+            document.getElementById('title').innerText = "Citações Diárias - Motivationz";
+            document.querySelector('button[onclick="nextQuote()"]').innerText = "Citação Seguinte";
+            currentLanguage = 'pt'; // Atualiza para o idioma português
+            nextQuote(); // Atualiza a citação para o idioma selecionado
         }
 
-        function displayFavorites() {
-            const favoritesList = JSON.parse(localStorage.getItem("favorites")) || [];
-            const favoritesContainer = document.getElementById("favoriteQuotes");
-            favoritesContainer.innerHTML = "";
-
-            if (favoritesList.length === 0) {
-                favoritesContainer.innerHTML = "<li>Você ainda não salvou nenhuma citação.</li>";
-            } else {
-                favoritesList.forEach((quote) => {
-                    const li = document.createElement("li");
-                    li.textContent = quote;
-
-                    const removeButton = document.createElement("button");
-                    removeButton.textContent = "Remover";
-                    removeButton.classList.add("remove");
-                    removeButton.onclick = () => removeFavorite(quote);
-
-                    li.appendChild(removeButton);
-                    favoritesContainer.appendChild(li);
-                });
-            }
-        }
-
-        function removeFavorite(quoteToRemove) {
-            let favoritesList = JSON.parse(localStorage.getItem("favorites")) || [];
-            favoritesList = favoritesList.filter(quote => quote !== quoteToRemove);
-            localStorage.setItem("favorites", JSON.stringify(favoritesList));
-            displayFavorites();
-        }
-
-        function setNotification() {
-            const frequency = document.getElementById("notificationFrequency").value;
-            if (Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
-
-            setInterval(() => {
-                if (Notification.permission === "granted") {
-                    const notification = new Notification("Citação do Dia", {
-                        body: currentQuote || "Clique em 'Citação Seguinte' para gerar uma citação!",
-                    });
-                }
-            }, frequency);
-        }
-
-        document.getElementById("generateQuote").addEventListener("click", generateQuote);
-        document.getElementById("saveFavorite").addEventListener("click", saveFavorite);
-        document.getElementById("setNotification").addEventListener("click", setNotification);
-
-        window.onload = function() {
-            displayFavorites();
-            generateQuote();
+        function translateToEnglish() {
+            document.getElementById('title').innerText = "Daily Quotes - Motivationz";
+            document.querySelector('button[onclick="nextQuote()"]').innerText = "Next Quote";
+            currentLanguage = 'en'; // Atualiza para o idioma inglês
+            nextQuote(); // Atualiza a citação para o idioma selecionado
         }
     </script>
 </body>
