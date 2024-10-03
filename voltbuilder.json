@@ -1,0 +1,13 @@
+{
+    "configFiles": "config.xml",
+    "release": {
+        "signing": {
+            "keystore": "path-to-your-keystore",
+            "alias": "your-key-alias"
+        }
+    },
+    "app": {
+        "id": "com.example.motivationz",
+        "name": "Motivationz"
+    }
+}

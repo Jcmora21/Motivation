@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.example.motivationz" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Motivationz</name>
+    <description>
+        App de citações diárias com notificações.
+    </description>
+    <author email="developer@example.com" href="http://example.com">Desenvolvedor</author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="BackgroundColor" value="0xFFFFFFFF" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+    </platform>
+</widget>

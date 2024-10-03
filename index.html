@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motivationz - Citações Diárias</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h1, h2 {
+            color: #ffffff;
+        }
+
+        textarea {
+            width: calc(100% - 20px);
+            background-color: #2a2a2a;
+            color: #ffffff;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 10px;
+            resize: none;
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+
+        button:hover {
+            background-color: #666;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button.remove {
+            background-color: #4CAF50;
+            color: #ffffff;
+        }
+
+        button.remove:hover {
+            background-color: #388E3C;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Citações Diárias - Motivationz</h1>
+        <textarea id="quote" readonly></textarea>
+        <button id="generateQuote">Citação Seguinte</button>
+        <button id="saveFavorite" style="display:none;">Salvar Favorito</button>
+        <h2>Favoritos</h2>
+        <ul id="favoriteQuotes"></ul>
+        <label for="notificationFrequency">Frequência de Notificação:</label>
+        <select id="notificationFrequency">
+            <option value="86400000">24 horas</option>
+            <option value="7200000">2 horas</option>
+            <option value="10800000">3 horas</option>
+            <option value="21600000">6 horas</option>
+            <option value="43200000">12 horas</option>
+            <option value="1440000">30 minutos</option>
+        </select>
+        <button id="setNotification">Definir Notificação</button>
+    </div>
+
+    <script>
+        const quotes = [
+            "A vida é 10% o que acontece e 90% como reagimos a isso.",
+            "A única maneira de fazer um excelente trabalho é amar o que você faz.",
+            "Você é nunca muito velho para definir outra meta ou sonhar um novo sonho.",
+            "Acredite que você pode e você já está no meio do caminho.",
+            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
+            "Não importa o quão lentamente você vá, desde que você não pare.",
+            "A única limitação que você tem é a que você se impõe.",
+            "A vida é feita de escolhas, e suas escolhas fazem sua vida.",
+            "Se você quer algo que nunca teve, precisa fazer algo que nunca fez."
+        ];
+
+        let currentQuote = "";
+
+        function generateQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            currentQuote = quotes[randomIndex];
+            document.getElementById("quote").value = currentQuote;
+            document.getElementById("saveFavorite").style.display = "inline-block";
+        }
+
+        function saveFavorite() {
+            if (!currentQuote) {
+                alert("Por favor, gere uma citação primeiro!");
+                return;
+            }
+
+            const favoritesList = JSON.parse(localStorage.getItem("favorites")) || [];
+            if (!favoritesList.includes(currentQuote)) {
+                favoritesList.push(currentQuote);
+                localStorage.setItem("favorites", JSON.stringify(favoritesList));
+                displayFavorites();
+            } else {
+                alert("Esta citação já está nos favoritos!");
+            }
+        }
+
+        function displayFavorites() {
+            const favoritesList = JSON.parse(localStorage.getItem("favorites")) || [];
+            const favoritesContainer = document.getElementById("favoriteQuotes");
+            favoritesContainer.innerHTML = "";
+
+            if (favoritesList.length === 0) {
+                favoritesContainer.innerHTML = "<li>Você ainda não salvou nenhuma citação.</li>";
+            } else {
+                favoritesList.forEach((quote) => {
+                    const li = document.createElement("li");
+                    li.textContent = quote;
+
+                    const removeButton = document.createElement("button");
+                    removeButton.textContent = "Remover";
+                    removeButton.classList.add("remove");
+                    removeButton.onclick = () => removeFavorite(quote);
+
+                    li.appendChild(removeButton);
+                    favoritesContainer.appendChild(li);
+                });
+            }
+        }
+
+        function removeFavorite(quoteToRemove) {
+            let favoritesList = JSON.parse(localStorage.getItem("favorites")) || [];
+            favoritesList = favoritesList.filter(quote => quote !== quoteToRemove);
+            localStorage.setItem("favorites", JSON.stringify(favoritesList));
+            displayFavorites();
+        }
+
+        function setNotification() {
+            const frequency = document.getElementById("notificationFrequency").value;
+            if (Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+
+            setInterval(() => {
+                if (Notification.permission === "granted") {
+                    const notification = new Notification("Citação do Dia", {
+                        body: currentQuote || "Clique em 'Citação Seguinte' para gerar uma citação!",
+                    });
+                }
+            }, frequency);
+        }
+
+        document.getElementById("generateQuote").addEventListener("click", generateQuote);
+        document.getElementById("saveFavorite").addEventListener("click", saveFavorite);
+        document.getElementById("setNotification").addEventListener("click", setNotification);
+
+        window.onload = function() {
+            displayFavorites();
+            generateQuote();
+        }
+    </script>
+</body>
+</html>
